@@ -1,0 +1,12 @@
+Makefile
+config.log
+config.status
+erasure_code/.deps/
+libisal.pc
+libtool
+*.o
+*.la
+*.lo
+.libs/
+erasure_code/.dirstamp
+autom4te*

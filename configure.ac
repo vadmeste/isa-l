@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.69)
+AC_PREREQ(2.67)
 AC_INIT([libisal],
         [2.14.0],
         [sg.support.isal@intel.com],
@@ -51,7 +51,7 @@ AS_IF([test "x$enable_debug" = "xyes"], [
 ])
 
 
-case $target in
+case $host_os in
      *linux*)	arch=linux   yasm_args="-f elf64";;
      *darwin*)	arch=darwin  yasm_args="-f macho64 --prefix=_ ";;
      *netbsd*)	arch=netbsd  yasm_args="-f elf64";;
