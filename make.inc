@@ -2,7 +2,7 @@
 #  Copyright(c) 2011-2015 Intel Corporation All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
-#  modification, are permitted provided that the following conditions 
+#  modification, are permitted provided that the following conditions
 #  are met:
 #    * Redistributions of source code must retain the above copyright
 #      notice, this list of conditions and the following disclaimer.
@@ -39,7 +39,7 @@
 #	trace - get simulator trace
 #	clean - remove object files
 
-version ?= #auto filled on release
+version = 2.14
 
 CC  = gcc
 AS  = yasm
@@ -74,8 +74,8 @@ examplesmingw = $(examples)
 perf_testsmingw = $(perf_tests)
 
 ifeq ($(arch),mingw)
-  CC=gcc
-  AR=ar
+  CC=x86_64-w64-mingw32-gcc
+  AR=x86_64-w64-mingw32-ar
   LDFLAGS = -Wl,--force-exe-suffix
 endif
 
@@ -87,12 +87,12 @@ ARFLAGS  = $(ARFLAGS_$(arch))
 DEFINES += $(addprefix -D , $D)
 
 O = bin
-lobj  += $(patsubst %.c,%.o,$(patsubst %.asm,%.o,$(lsrc$(arch)) $(lsrc_intrinsic)))
-objs  = $(addprefix $(O)/,$(notdir $(lobj)))
+lobj  += $(patsubst %.c,%.o,$(patsubst %.asm,%.o,$(lsrc$(arch))))
+objs  = $(addprefix $(O)/,$(lobj))
 
 
 lib_name ?= isa-l.a
-default: lib slib
+default ?= lib slib
 
 # Defaults for windows build
 ifeq ($(arch),win64)
@@ -108,29 +108,24 @@ exampleswin64 = $(examples)
 perf_testswin64 = $(perf_tests)
 
 # Build and run unit tests, performance tests, etc.
-all_tests = $(notdir $(sort $(perf_tests$(arch)) $(check_tests$(arch)) $(unit_tests$(arch)) $(examples$(arch)) $(other_tests)))
-all_unit_tests = $(notdir $(sort $(check_tests$(arch)) $(unit_tests$(arch))))
+all_tests = $(sort $(perf_tests$(arch)) $(unit_tests$(arch)) $(examples$(arch)) $(other_tests))
 
-$(all_unit_tests): % : %.c $(lib_name)
-$(sort $(notdir $(perf_tests$(arch)))): % : %.c $(lib_name)
+$(sort $(unit_tests$(arch))): % : %.c $(tsrc$(arch)) $(lib_name)
+$(sort $(perf_tests$(arch))): % : %.c $(lib_name)
 $(sort $(examples$(arch))): % : %.c $(lib_name)
 $(sort $(other_tests)): % : %.c $(lib_name)
 
-sim test trace: $(addsuffix .run,$(all_unit_tests))
-
-perf: $(addsuffix .run,$(notdir $(perf_tests$(arch))))
+sim test trace: $(addsuffix .run,$(unit_tests$(arch)))
+perf: $(addsuffix .run,$(perf_tests$(arch)))
 ex:   $(examples$(arch))
 all: lib $(all_tests)
 other: $(other_tests)
-tests: $(all_unit_tests)
-perfs: $(notdir $(perf_tests$(arch)))
-check test perf: SIM=
+tests: $(unit_tests$(arch))
+perfs: $(perf_tests$(arch))
+test perf: SIM=
 trace: SIMFLAGS = -debugtrace
-check test sim:
-	@echo Finished running $@
-
-#$(foreach c, $^, ./$c )
-#for i in $^; do ./$$i ; done
+test sim:
+	@echo Finished running tests
 
 $(objs): | $(O)
 $(O): ; mkdir -p $(O)
@@ -176,14 +171,14 @@ $(lib_name): $(objs)
 
 
 # Target for shared lib
-so_lib_name = bin/libisal.so
+so_lib_name = libisal.so
 so_lib_inst = $(notdir $(so_lib_name))
 so_lib_ver  = $(so_lib_inst).$(version)
 soname      = $(so_lib_inst).$(word 1, $(subst ., ,$(version)))
 
 slib: $(so_lib_name)
-aobjs  += $(addprefix $(O)/,$(patsubst %.asm,%.o,$(filter %.asm,$(notdir $(lsrc$(arch)) $(lsrc_intrinsic)))))
-shared_objs  += $(addprefix $(O)/shared_ver_,$(patsubst %.c,%.o,$(filter %.c,$(notdir $(lsrc$(arch)) $(lsrc_intrinsic)))))
+aobjs  += $(addprefix $(O)/,$(patsubst %.asm,%.o,$(filter %.asm,$(lsrc$(arch)))))
+shared_objs  += $(addprefix $(O)/shared_ver_,$(patsubst %.c,%.o,$(filter %.c,$(lsrc$(arch)))))
 
 $(O)/shared_ver_%.o: %.c
 	@echo "  ---> Building shared $< $(msg)"

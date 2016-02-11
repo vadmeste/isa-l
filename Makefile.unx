@@ -27,15 +27,16 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
-units     = crc mb_sha1 mb_sha256 mb_sha512 mb_md5 sha1_mb sha256_mb sha512_mb md5_mb sha1 raid erasure_code igzip mem rolling_hash mh_sha1 mh_sha1_murmur3_x64_128 aes
+
+units = erasure_code
 
 default: lib
 
-include $(foreach unit,$(units), $(unit)/Makefile.am)
+include $(foreach unit,$(units), $(unit)/Makefile.unx)
 
 # Override individual lib names to make one inclusive library.
-lib_name := bin/isa-l.a
+lib_name := isa-l.a
 
 include make.inc
 
-VPATH = . $(units) include
+VPATH = $(units) include
