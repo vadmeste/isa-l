@@ -36,7 +36,7 @@ zlibinc   = c:\zlib\include
 INCLUDES = -I. -Ierasure_code -Iinclude -I$(libinc) -I$(zlibinc)
 CFLAGS   = -O2 -D ZLIB_WINAPI -D NDEBUG /nologo -D_USE_MATH_DEFINES -Qstd=c99 $(INCLUDES) $(D)
 AFLAGS   = -f win64 $(INCLUDES) $(D)
-CC       = icl
+CC       = cl
 AS       = yasm
 
 lib: bin isa-l.lib
