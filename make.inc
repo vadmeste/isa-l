@@ -75,7 +75,7 @@ perf_testsmingw = $(perf_tests)
 
 ifeq ($(arch),mingw)
   CC=x86_64-w64-mingw32-gcc
-  AR=x86_64-w64-mingw32-ar
+  AR=x86_64-w64-mingw32-gcc-ar
   LDFLAGS = -Wl,--force-exe-suffix
 endif
 
