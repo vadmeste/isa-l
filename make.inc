@@ -51,8 +51,8 @@ DEBUG_nasm = -g
 
 # Default arch= build options
 CFLAGS_gcc = -Wall
-ASFLAGS_   = -f elf64
-ARFLAGS_   = cr $@
+ASFLAGS_gcc = -f elf64
+ARFLAGS_gcc = cr $@
 STRIP_gcc  = strip -d -R .comment $@
 
 # arch=32 build options
@@ -60,10 +60,32 @@ ASFLAGS_32 = -f elf32
 CFLAGS_32  = -m32
 ARFLAGS_32 = cr $@
 
+lsrcgcc = $(lsrc)
+unit_testsgcc = $(unit_tests)
+examplesgcc = $(examples)
+perf_testsgcc = $(perf_tests)
+ifeq ($(arch),gcc)
+  CC=gcc
+  AR=ar
+endif
+
 # arch=win64 build options
 ASFLAGS_win64 = -f win64
 CFLAGS_icl    = -Qstd=c99
 ARFLAGS_win64 = -out:$@
+
+# arch=clang build options
+ASFLAGS_clang = -f macho64 --prefix=_
+ARFLAGS_clang = -rcs $@
+STRIP_clang = strip -S $@
+lsrcclang = $(lsrc)
+unit_testsclang = $(unit_tests)
+examplesclang = $(examples)
+perf_testsclang = $(perf_tests)
+ifeq ($(arch),clang)
+  CC=clang
+  AR=ar
+endif
 
 # arch=mingw build options
 ASFLAGS_mingw = -f win64
