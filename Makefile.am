@@ -1,7 +1,6 @@
 EXTRA_DIST = autogen.sh Makefile.unx make.inc Makefile.nmake About_bsd.txt
 CLEANFILES =
 LDADD =
-AM_MAKEFLAGS = --no-print-directory
 noinst_HEADERS =
 pkginclude_HEADERS = include/test.h
 noinst_LTLIBRARIES =
